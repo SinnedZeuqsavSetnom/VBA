@@ -1,5 +1,3 @@
-%#'IF 2nd=1st, pull (x) & (x-1) rows to Sheet2 | xa = xa+1
-
 Sub ColorSort()
 Application.ScreenUpdating = False
 

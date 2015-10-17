@@ -1,0 +1,12 @@
+Sub ColorSort()
+Application.ScreenUpdating = False
+
+For x = 2 To 6
+Cells(x, 4).Value = Cells(x, 1).Interior.ColorIndex
+Next
+
+Columns("A:C").Sort key1:=Range("A2"), _
+    order1:=xlAscending, Header:=xlYes
+
+Application.ScreenUpdating = True
+End Sub

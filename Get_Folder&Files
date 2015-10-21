@@ -1,0 +1,35 @@
+Sub GetFoldersAndFiles()
+Dim objFSO As Object
+Dim objFolder As Object
+Dim objSubfolder As Object
+Dim objFile As Object
+Dim i, j, b, FileNamesColumn As Integer: FileNamesColumn = 1
+Dim VColumn, HColumn, CColumn, PColumn, VRow, HRow, CRow, PRow As Integer
+Dim RegExp
+    Set RegExp = New RegExp
+    RegExp.Pattern = "\d\d"
+
+'Create an instance of the FileSystemObject
+Set objFSO = CreateObject("Scripting.FileSystemObject")
+'Get the folder object
+Set objFolder = objFSO.GetFolder("C:\Users\Nuku\Dropbox\Task 3A")
+i = 1
+'loops through each file in the directory and prints their names and path
+For Each objSubfolder In objFolder.subFolders
+
+If RegExp.Test(objSubfolder) Then
+    For Each objFile In objSubfolder.Files
+      'print file path
+     If Right(objFile, 10) = "PA&WC.xlsx" Then
+        'Cells(i + 1, 1).Value = objFile.Path
+        Sheets(2).Select
+        VColumn = 1
+        For VRow = 1 To 5
+        Cells(VRow, VColumn).Value = "='" & objFile.Path & "\[" & objFile.Name & "]Vision'!A" & VRow
+        Next VRow
+     i = i + 1
+     End If
+    Next objFile
+End If
+
+Next objSubfolder

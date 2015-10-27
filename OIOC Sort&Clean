@@ -1,0 +1,52 @@
+Sub OIOC_ALL()
+Application.ScreenUpdating = False
+'
+CountDpl = 2
+CountSgl = 2
+CountRcr = 2
+' OIOC_ALL Macro
+'Sort by PATIENT_ID - START
+For P_IDCol = 1 To 519
+If Left(Cells(1, P_IDCol).Value, Len("PATIENTCLINICID")) = "PATIENTCLINICID" Then
+Cells(1, P_IDCol).Interior.Color = RGB(255, 0, 0) 'Paints result Red for verification
+P_IDColVal = Chr(96 + P_IDCol) & "2" 'P_IDCol #Column->LetterColumn
+    Range("A:SW").Sort key1:=Range(P_IDColVal), _
+    order1:=xlAscending, Header:=xlYes
+End If
+Next
+''Sort by PATIENT_ID - END
+'Separation Single vs. Recurrent - START
+For P_IDRow = 2 To 1200
+P_IDRowVal = "A" & P_IDRow & ":SW" & P_IDRow
+P_IDRowValNxt = "A" & P_IDRow + 1 & ":SW" & P_IDRow + 1
+P_IDRowDpl = "A" & CountDpl & ":SW" & CountDpl
+P_IDRowSgl = "A" & CountSgl & ":SW" & CountSgl
+P_IDRowRcr = "A" & CountRcr & ":SW" & CountRcr
+DplMtc = 0
+    For Col = 1 To 519
+    If Cells(P_IDRow + 1, Col) = Cells(P_IDRow, Col) Then
+    DplMtc = DplMtc + 1
+    End If
+    Next
+    Cells(P_IDRow, 520).Value = DplMtc
+    
+If DplMtc = 519 Then
+    Sheets("Duplicates").Range(P_IDRowDpl).Value = Sheets("July15_ALL").Range(P_IDRowVal).Value
+    CountDpl = CountDpl + 1
+Else
+    If Cells(P_IDRow + 1, 1).Value = Cells(P_IDRow, 1).Value Then
+        Sheets("Recurrent").Range(P_IDRowRcr).Value = Sheets("July15_ALL").Range(P_IDRowVal).Value
+        CountRcr = CountRcr + 1
+    Else
+        Sheets("Single").Range(P_IDRowSgl).Value = Sheets("July15_ALL").Range(P_IDRowVal).Value
+        CountSgl = CountSgl + 1
+    End If
+End If
+
+Next
+''Separation Single vs. Recurrent - END
+
+
+    
+Application.ScreenUpdating = True
+End Sub

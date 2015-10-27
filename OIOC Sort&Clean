@@ -1,10 +1,15 @@
 Sub OIOC_ALL()
 Application.ScreenUpdating = False
-'
+
+'Basic Parameters START
+RawDataSheet = InputBox("Input name of Raw Data Sheet", "Raw Data Sheet Inputbox")
 CountDpl = 2
 CountSgl = 2
 CountRcr = 2
 ' OIOC_ALL Macro
+
+'Row Counter START #In Development
+''Row Counter END
 'Sort by PATIENT_ID - START
 For P_IDCol = 1 To 519
 If Left(Cells(1, P_IDCol).Value, Len("PATIENTCLINICID")) = "PATIENTCLINICID" Then
@@ -16,7 +21,7 @@ End If
 Next
 ''Sort by PATIENT_ID - END
 'Separation Single vs. Recurrent - START
-For P_IDRow = 2 To 1200
+For P_IDRow = 2 To 3095
 P_IDRowVal = "A" & P_IDRow & ":SW" & P_IDRow
 P_IDRowValNxt = "A" & P_IDRow + 1 & ":SW" & P_IDRow + 1
 P_IDRowDpl = "A" & CountDpl & ":SW" & CountDpl
@@ -31,15 +36,20 @@ DplMtc = 0
     Cells(P_IDRow, 520).Value = DplMtc
     
 If DplMtc = 519 Then
-    Sheets("Duplicates").Range(P_IDRowDpl).Value = Sheets("July15_ALL").Range(P_IDRowVal).Value
+    Sheets("Duplicates").Range(P_IDRowDpl).Value = Sheets(RawDataSheet).Range(P_IDRowVal).Value
     CountDpl = CountDpl + 1
 Else
     If Cells(P_IDRow + 1, 1).Value = Cells(P_IDRow, 1).Value Then
-        Sheets("Recurrent").Range(P_IDRowRcr).Value = Sheets("July15_ALL").Range(P_IDRowVal).Value
+        Sheets("Recurrent").Range(P_IDRowRcr).Value = Sheets(RawDataSheet).Range(P_IDRowVal).Value
         CountRcr = CountRcr + 1
     Else
-        Sheets("Single").Range(P_IDRowSgl).Value = Sheets("July15_ALL").Range(P_IDRowVal).Value
-        CountSgl = CountSgl + 1
+        If Cells(P_IDRow - 1, 1).Value = Cells(P_IDRow, 1).Value Then
+            Sheets("Recurrent").Range(P_IDRowRcr).Value = Sheets(RawDataSheet).Range(P_IDRowVal).Value
+            CountRcr = CountRcr + 1
+        Else
+            Sheets("Single").Range(P_IDRowSgl).Value = Sheets(RawDataSheet).Range(P_IDRowVal).Value
+            CountSgl = CountSgl + 1
+        End If
     End If
 End If
 
@@ -50,3 +60,4 @@ Next
     
 Application.ScreenUpdating = True
 End Sub
+
